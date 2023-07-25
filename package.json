@@ -2,6 +2,7 @@
   "name": "tranner",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://openapi.naver.com",
   "scripts": {
     "dev": "next dev -p 80",
     "build": "next build",
@@ -13,7 +14,7 @@
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@types/navermaps": "^3.6.5",
+    "axios": "^1.4.0",
     "framer-motion": "^10.13.0",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.1",
@@ -22,6 +23,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@types/navermaps": "^3.6.5",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
     "eslint": "8.45.0",
