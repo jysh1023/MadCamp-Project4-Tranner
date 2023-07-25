@@ -13,12 +13,7 @@ import {
 import {useRouter} from 'next/router';
 
 
-interface NavItem {
-  label: string;
-  href: string;
-}
-
-const NAV_ITEMS: Array<NavItem> = [
+const NAV_ITEMS = [
   {
     label : '둘러보기',
     href: '/explore'
@@ -77,7 +72,7 @@ const Navigation = ({router}) => {
   const handleNavigation = (href) => () =>{
     router.push(href);
   };
-  
+
   return (
     <Stack direction={'row'} spacing={3}>
       {NAV_ITEMS.map((navItem) => (

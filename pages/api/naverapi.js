@@ -1,6 +1,8 @@
+import React from 'react';
 import axios from 'axios';
 
 export default async function handler(req, res) {
+
   if (req.method === 'GET') {
     try {
       const response = await axios.get('https://openapi.naver.com/v1/search/local.json', {
@@ -10,15 +12,19 @@ export default async function handler(req, res) {
         },
         params: req.query,
       });
+      // console.log(response.data);
 
-      console.log(data);
+      const data = response.data;
 
-      res.status(200).json(data)
+      if (data.items && data.items.length > 0) {
+        res.status(200).json(data);
+      } else {
+        res.status(404).json({ error: "No places found" });
+      }
+
     } catch (error) {
       console.error('Error fetching data from Naver API:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
-  } else {
-    res.status(405).json({ error: 'Method not allowed' });
   }
 }

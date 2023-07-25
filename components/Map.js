@@ -6,14 +6,20 @@ const Map = ({ width, height, location }) => {
     const script = document.createElement('script');
     script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NAVER_MAP_CLIENT_ID}`;
     script.async = true;
-    script.onload = initNaverMap;
+
+    const onLoad = () => {
+      initNaverMap();
+    };
+
+    script.addEventListener('load', onLoad);
 
     document.head.appendChild(script);
 
     return () => {
+      script.removeEventListener('load', onLoad);
       document.head.removeChild(script);
     };
-  });
+  }, []);
 
   const initNaverMap =() => {
     if (window.naver && window.naver.maps) {

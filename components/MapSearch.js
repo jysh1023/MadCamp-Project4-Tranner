@@ -1,37 +1,27 @@
-import { useState } from "react";
-import SearchBar from "../components/SearchBar"
+import React, { useState } from "react";
 import axios from "axios";
+import SearchBar from "./SearchBar";
+import { UnorderedList, ListItem } from "@chakra-ui/react";
 
 const MapSearch = ({ onLocationSelect }) => {
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
 
   const handleSearch = async (keyword) => {
-    console.log(keyword);
+    console.log("들어왔음")
 
     if(keyword.trim() != '') {
       try {
-        // const response = await axios.get('https://openapi.naver.com/v1/search/local.json', {
-        //   headers: {
-        //     'X-Naver-Client-Id': process.env.NAVER_API_KEY_ID,
-        //     'X-Naver-Client-Secret': process.env.NAVER_API_KEY_SECRET,
-        //   },
-        //   params: {
-        //     query: keyword,
-        //   }
-        // })
 
         const response = await axios.get('/api/naverapi', {
           params: {
             query: keyword,
           }
-        })
-
-        console.log(response.status);
+        });
 
         if (response.status === 200) {
           const data = await response.data;
           console.log(data);
-          setSuggestedKeywords(data.places.map((place) => place.name));
+          setSuggestedKeywords(data.items.map((item) => item.title));
         } else {
           setSuggestedKeywords([])
         }
@@ -46,16 +36,6 @@ const MapSearch = ({ onLocationSelect }) => {
 
   const selectLocationHandler = async (address) => {
 
-    // const response = await axios.get('https://openapi.naver.com/v1/search/local.json', {
-    //   headers: {
-    //     'X-Naver-Client-Id': process.env.NAVER_API_KEY_ID,
-    //     'X-Naver-Client-Secret': process.env.NAVER_API_KEY_SECRET,
-    //   },
-    //   params: {
-    //     query: address,
-    //     display: 5,
-    //   },
-    // })
     const response = await axios.get('/api/naverapi', {
       params: {
         query: address,
@@ -64,9 +44,16 @@ const MapSearch = ({ onLocationSelect }) => {
     })
       .then(() => {
         const data =  response.data;
-        if (data.addresses && data.addresses.length > 0) {
-          const { x, y } = data.addresses[0];
-          onLocationSelect(new window.naver.maps.LatLng(y, x));
+        if (data.items && data.items.length > 0) {
+          const place = data.items[0];
+          const { mapx, mapy, title } = place;
+
+          const longitude = parseFloat(mapx);
+          const latitude = parseFloat(mapy);
+
+          onLocationSelect(new window.naver.maps.LatLng(latitude, longitude));
+
+          console.log('Selected location:', title, latitude, longitude);
         }
       })
       .catch((error) => {
@@ -78,13 +65,13 @@ const MapSearch = ({ onLocationSelect }) => {
   return (
     <div>
       <SearchBar onSearch={handleSearch} />
-      <ul>
+      <UnorderedList>
         {suggestedKeywords.map((keyword, index) => (
-          <li key={index} onClick={selectLocationHandler}>
+          <ListItem key={index} onClick={() => selectLocationHandler(keyword)}>
             {keyword}
-          </li>
+          </ListItem>
         ))}
-      </ul>
+      </UnorderedList>
     </div>
   )
 }

@@ -1,31 +1,39 @@
-import { useState } from "react";
-import { Input, Button } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
 
 const SearchBar = ({onSearch}) => {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleInputChange = (e) => {
     setSearchKeyword(e.target.value);
-    console.log(searchKeyword)
     onSearch(e.target.value);
+    console.log(searchKeyword);
   }
 
   const handleSearchClick = () => {
+    console.log('clicked')
     if (searchKeyword.trim() !== '') {
       onSearch(searchKeyword);
     }
   };
 
   return (
-    <div>
+    <FormControl>
+      <FormLabel>Location</FormLabel>
       <Input
         type="text"
         value={searchKeyword}
         onChange={handleInputChange}
-        placeholder="검색어를 입력하세요"
+        placeholder="Search for a location"
       />
-      <Button onClick={handleSearchClick}> 검색 </Button>
-    </div>
+      <Button
+        mt={4}
+        colorScheme='teal'
+        type='submit'
+        onClick={handleSearchClick}>
+        검색
+      </Button>
+    </FormControl>
 
 
   );
