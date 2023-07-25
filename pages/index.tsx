@@ -16,14 +16,37 @@ import {
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import App from 'next/app';
 
 export default function SignupCard() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+    const [id, setId] = useState('');
+    const [password, setPassWord] = useState('');
 
-    const loginSignUp = () => {
-        
-        router.push('/explore');
+
+    const loginSignUp = async () => {
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data); // 서버에서 전달한 데이터를 확인 (예: 사용자 정보)
+                router.push('/explore');
+            } else {
+                const errorData = await response.json();
+                console.error('Login failed:', errorData.message); // 실패 메시지를 확인 (예: "Invalid ID or password")
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
     };
 
     return (
@@ -49,7 +72,7 @@ export default function SignupCard() {
                     <Stack spacing={3}>
                         <FormControl id="Your ID" isRequired>
                             <FormLabel>ID</FormLabel>
-                            <Input type="text" 
+                            <Input type="text"
                                 placeholder="Input your ID"
                                 bg={'gray.100'}
                                 border={0}
@@ -57,6 +80,8 @@ export default function SignupCard() {
                                 _placeholder={{
                                     color: 'gray.500',
                                 }}
+                                value={id}
+                                onChange={(e) => setId(e.target.value)}
                             />
                         </FormControl>
                         <FormControl id="password" isRequired>
@@ -64,13 +89,15 @@ export default function SignupCard() {
                             <InputGroup>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
-                                    placeholder="Input your passward"
+                                    placeholder="Input your password"
                                     bg={'gray.100'}
                                     border={0}
                                     color={'gray.500'}
                                     _placeholder={{
                                         color: 'gray.500',
                                     }}
+                                    value={password}
+                                    onChange={(e) => setPassWord(e.target.value)}
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
@@ -100,7 +127,7 @@ export default function SignupCard() {
                         <Stack pt={6}>
                             <Text align={'center'}>
                                 Want to sign up?
-                                <Link 
+                                <Link
                                     color={'blue.400'}
                                     href='getstarted'
                                 >
