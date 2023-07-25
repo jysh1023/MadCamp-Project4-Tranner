@@ -10,6 +10,8 @@ import {
   useColorModeValue,
   useBreakpointValue,
 } from '@chakra-ui/react';
+import {useRouter} from 'next/router';
+
 
 interface NavItem {
   label: string;
@@ -32,6 +34,7 @@ const NAV_ITEMS: Array<NavItem> = [
 ]
 
 export default function NavBar () {
+  const router = useRouter();
 
   return (
     <Box>
@@ -45,7 +48,6 @@ export default function NavBar () {
         borderStyle={'solid'}
         borderColor={useColorModeValue('gray.200', 'gray.900')}
         align={'center'}>
-
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
@@ -53,50 +55,29 @@ export default function NavBar () {
             color={useColorModeValue('gray.800', 'white')}>
             Logo
           </Text>
-
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-            <Navigation />
+            <Navigation router = {router}/>
           </Flex>
-
         </Flex>
-
         <Stack
           flex={{ base: 1, md: 0 }}
           justify={'flex-end'}
           direction={'row'}
           spacing={6}>
-          <Button
-            as={'a'}
-            fontSize={'sm'}
-            fontWeight={400}
-            variant={'link'}
-            href={'#'}>
-            Sign In
-          </Button>
-          <Button
-            as={'a'}
-            display={{ base: 'none', md: 'inline-flex' }}
-            fontSize={'sm'}
-            fontWeight={600}
-            color={'white'}
-            bg={'blue.400'}
-            href={'#'}
-            _hover={{
-              bg: 'blue.300',
-            }}>
-            Sign Up
-          </Button>
         </Stack>
       </Flex>
-
     </Box>
   )
 }
 
-const Navigation = () => {
+const Navigation = ({router}) => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
 
+  const handleNavigation = (href) => () =>{
+    router.push(href);
+  };
+  
   return (
     <Stack direction={'row'} spacing={3}>
       {NAV_ITEMS.map((navItem) => (
@@ -112,11 +93,12 @@ const Navigation = () => {
                 _hover={{
                   textDecoration: 'none',
                   color: linkHoverColor,
-                }}>
+                }}
+                onClick={handleNavigation(navItem.href)}
+              >
                 {navItem.label}
               </Link>
             </PopoverTrigger>
-
           </Popover>
         </Box>
       ))}
