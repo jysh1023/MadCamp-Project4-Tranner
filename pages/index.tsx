@@ -12,19 +12,19 @@ import {
     Text,
     useColorModeValue,
     Link,
+    useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import App from 'next/app';
 
 export default function SignupCard() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [id, setId] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassWord] = useState('');
-
+    const toast = useToast();
 
     const loginSignUp = async () => {
         try {
@@ -33,19 +33,32 @@ export default function SignupCard() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id, password }),
+                body: JSON.stringify({ id, name, password }),
             });
-
             if (response.ok) {
                 const data = await response.json();
-                console.log(data); // 서버에서 전달한 데이터를 확인 (예: 사용자 정보)
+                console.log(data);
                 router.push('/explore');
             } else {
                 const errorData = await response.json();
-                console.error('Login failed:', errorData.message); // 실패 메시지를 확인 (예: "Invalid ID or password")
+                console.error('Login failed:', errorData.message);
+                toast({
+                    title: '잘못된 아이디나 비밀번호 입니다.',
+                    description: errorData.message,
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
             }
         } catch (error) {
             console.error('Error:', error);
+            toast({
+                title: '에러',
+                description: '오류가 발생했습니다.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
         }
     };
 
@@ -82,6 +95,20 @@ export default function SignupCard() {
                                 }}
                                 value={id}
                                 onChange={(e) => setId(e.target.value)}
+                            />
+                        </FormControl>
+                        <FormControl id="Your nickname" isRequired>
+                            <FormLabel>Nickname</FormLabel>
+                            <Input type="text"
+                                placeholder="Input your Nickname"
+                                bg={'gray.100'}
+                                border={0}
+                                color={'gray.500'}
+                                _placeholder={{
+                                    color: 'gray.500',
+                                }}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </FormControl>
                         <FormControl id="password" isRequired>

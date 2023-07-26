@@ -4,7 +4,7 @@
   "private": true,
   "proxy": "https://openapi.naver.com",
   "scripts": {
-    "dev": "next dev -p 80",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -15,17 +15,20 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
     "framer-motion": "^10.13.0",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.1",
     "next": "13.4.12",
     "react": "18.2.0",
+    "react-datepicker": "^4.16.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
     "@types/navermaps": "^3.6.5",
     "@types/node": "20.4.4",
     "@types/react": "18.2.15",
+    "@types/react-datepicker": "^4.15.0",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
     "typescript": "5.1.6"

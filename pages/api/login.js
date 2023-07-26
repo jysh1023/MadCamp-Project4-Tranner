@@ -2,12 +2,12 @@ import dbConnect from '../../db';
 import User from '../../data/user';
 
 export default async function handler(req, res) {
-    const { id, password } = req.body;
+    const { id, name, password } = req.body;
 
     await dbConnect();
 
     try {
-        const user = await User.findOne({ name: id, password : password });
+        const user = await User.findOne({ id : id, name : name, password : password,});
 
         if (!user) {
             return res.status(404).json({ message: 'Invalid ID or password' });

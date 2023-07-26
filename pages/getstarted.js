@@ -14,11 +14,12 @@ import {
     InputGroup,
     InputRightElement,
     SimpleGrid,
+    useToast,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { color } from 'framer-motion';
+import axios from 'axios';
 
 export default function JoinOurTeam() {
     const router = useRouter();
@@ -38,10 +39,70 @@ export default function JoinOurTeam() {
     const [travelClick, settravelClick] = useState(false);
     const [foodClick, setfoodClick] = useState(false);
     const [shopClick, setshopClick] = useState(false);
+    const [id, setId] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassWord] = useState('');
+    const [who, setWho] = useState([]);
+    const [styles, setStyles] = useState([]);
+    const toast = useToast();
 
-    const handleSignUp = () => {
-        
-        router.push('/explore');
+    let who_list = ['혼자', '친구와', '연인과', '배우자와', '아이와', '부모님과', '기타'];
+    let who_select = [aloneClick, friendClick,coupleClick, lifeClick, childClick, parentsClick, etcClick];
+
+    let styles_list = ['체험', '핫플', '힐링', '관광지', '문화,예술', '여행지', '쇼핑', '먹거리'];
+    let styles_select =[activeClick, hotClick, healingClick, famousClick, artClick, travelClick, shopClick, foodClick];
+
+    const handleSignUp = async () => {
+        const selectedWho = [];
+        const selectedStyles = [];
+    
+        who_select.forEach((isClicked, index) => {
+            if (isClicked) {
+                selectedWho.push(who_list[index]);
+            }
+        });
+    
+        styles_select.forEach((isClicked, index) => {
+            if (isClicked) {
+                selectedStyles.push(styles_list[index]);
+            }
+        });
+    
+        const userData = {
+            id: id,
+            name: name,
+            password: password,
+            who: selectedWho,
+            styles: selectedStyles,
+        };
+    
+        try {
+            console.log(id, name, password, selectedWho, selectedStyles);
+            const response = await axios.post('./api/signup', userData);
+            console.log(response.data);
+    
+            if (response.status == 200) {
+                router.push('/explore');
+            } else {
+                console.error('Already exist id', response.data.message);
+                toast({
+                    title: '이미 존재하는 아이디입니다.',
+                    description: response.data.message,
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        } catch (error) {
+            console.error('Error during sign up:', error.message);
+            toast({
+                title: '에러',
+                description: '오류가 발생했습니다.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
     };
 
     return (
@@ -56,7 +117,7 @@ export default function JoinOurTeam() {
                 as={SimpleGrid}
                 maxW={'7xl'}
                 columns={{ base: 1, md: 2 }}
-                spacing={{ base: 10, lg: 32 }}
+                spacing={{ base: 8, lg: 32 }}
                 py={{ base: 10, sm: 20, lg: 32 }}
             >
                 <Stack
@@ -65,7 +126,7 @@ export default function JoinOurTeam() {
                     p={{ base: 4, sm: 6, md: 8 }}
                     spacing={{ base: 8 }}
                     maxW={{ lg: 'lg' }}>
-                    <Stack spacing={4}>
+                    <Stack spacing={2}>
                         <Heading
                             color={'gray.800'}
                             lineHeight={1.1}
@@ -84,8 +145,8 @@ export default function JoinOurTeam() {
                             좋은 여행 코스를 추천 받고 싶을 때,
                         </Text>
                     </Stack>
-                    <Box as={'form'} mt={10}>
-                        <Stack spacing={4}>
+                    <Box as={'form'} mt={1}>
+                        <Stack spacing={2}>
                             <FormControl id="Your ID" isRequired>
                                 <FormLabel>ID</FormLabel>
                                 <Input
@@ -96,6 +157,22 @@ export default function JoinOurTeam() {
                                     _placeholder={{
                                         color: 'gray.500',
                                     }}
+                                    value = {id}
+                                    onChange={(e) => setId(e.target.value)}
+                                />
+                            </FormControl>
+                            <FormControl id="Your nickname" isRequired>
+                                <FormLabel>Nickname</FormLabel>
+                                <Input
+                                    placeholder="Input your Nickname"
+                                    bg={'gray.100'}
+                                    border={0}
+                                    color={'gray.500'}
+                                    _placeholder={{
+                                        color: 'gray.500',
+                                    }}
+                                    value = {name}
+                                    onChange={(e) => setName(e.target.value)}
                                 />
                             </FormControl>
                             <FormControl id="password" isRequired>
@@ -110,6 +187,8 @@ export default function JoinOurTeam() {
                                         _placeholder={{
                                             color: 'gray.500',
                                         }}
+                                        value = {password}
+                                        onChange={(e) => setPassWord(e.target.value)}
                                     />
                                     <InputRightElement h={'full'}>
                                         <Button
@@ -141,7 +220,7 @@ export default function JoinOurTeam() {
                                             onClick={() => setfriendClick((friendClickClick)=>!friendClickClick)}
                                             colorScheme = {friendClick ? 'red' : 'teal'}
                                         >
-                                            친구
+                                            친구와
                                         </Tag>
                                         <Tag 
                                             size='lg' 
@@ -150,7 +229,7 @@ export default function JoinOurTeam() {
                                             onClick={() => setcoupleClick((coupleClick)=>!coupleClick)}
                                             colorScheme = {coupleClick ? 'red' : 'teal'}
                                         >
-                                            연인
+                                            연인과
                                         </Tag>
                                         <Tag 
                                             size='lg' 
@@ -158,7 +237,7 @@ export default function JoinOurTeam() {
                                             onClick={() => setlifeClick((lifeClick)=>!lifeClick)}
                                             colorScheme = {lifeClick ? 'red' : 'teal'}
                                         >
-                                            배우자
+                                            배우자와
                                         </Tag>
                                     </Flex>
                                 </HStack>
@@ -171,7 +250,7 @@ export default function JoinOurTeam() {
                                             onClick={() => setchildClick((childClick)=>!childClick)}
                                             colorScheme = {childClick ? 'red' : 'teal'}
                                         >
-                                            아이
+                                            아이와
                                         </Tag>
                                         <Tag 
                                             size='lg' 
@@ -180,7 +259,7 @@ export default function JoinOurTeam() {
                                             onClick={() => setparentsClick((parentsClick)=>!parentsClick)}
                                             colorScheme = {parentsClick ? 'red' : 'teal'}
                                         >
-                                            부모님
+                                            부모님과
                                         </Tag>
                                         <Tag 
                                             size='lg' 
@@ -276,7 +355,7 @@ export default function JoinOurTeam() {
                         </Stack>
                         <Button
                             fontFamily={'heading'}
-                            mt={8}
+                            mt={4}
                             w={'full'}
                             bgGradient="linear(to-r, red.400,pink.400)"
                             color={'white'}
