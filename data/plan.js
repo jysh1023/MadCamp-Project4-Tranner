@@ -28,6 +28,9 @@ const PlanSchema = new Schema({
     who : [String],
     day : Number,
     days : [DaySchema],
+    startday : Date,
+    enddate : Date,
+    city : String,
     comments : [CommentsSchema]
 });
 
