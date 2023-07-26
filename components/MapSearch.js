@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import SearchBar from "./SearchBar";
-import { UnorderedList, ListItem } from "@chakra-ui/react";
+import { UnorderedList, ListItem, Box } from "@chakra-ui/react";
+
+const Item = () => {
+  return (
+    <Box>
+
+    </Box>
+  )
+}
 
 const MapSearch = ({ onLocationSelect }) => {
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
