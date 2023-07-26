@@ -34,4 +34,4 @@ const PlanSchema = new Schema({
     comments : [CommentsSchema]
 });
 
-module.exports = mongoose.model('Plan', PlanSchema);const mongoose = require('mongoose');
+module.exports = mongoose.model('Plan', PlanSchema);

@@ -40,12 +40,12 @@ const Map = ({ width, height, location }) => {
       const tm128= new naver.maps.Point(location.x, location.y);
       const latLng = naver.maps.TransCoord.fromTM128ToLatLng(tm128);``
 
-      // const mapOptions = {
-      //   center: new window.naver.maps.LatLng(latLng.y, latLng.x),
-      //   zoom: 13,
-      // }
+      const mapOptions = {
+        center: new window.naver.maps.LatLng(latLng.y, latLng.x),
+        zoom: 13,
+      }
 
-      // mapInstance.setOptions(mapOptions);
+      mapInstance.setOptions(mapOptions);
 
       if (marker) {
         marker.setPosition(latLng);
@@ -73,7 +73,6 @@ const Map = ({ width, height, location }) => {
 
       const map = new window.naver.maps.Map(mapContainerRef.current, mapOptions);
       setMapInstance(map);
-
     }
   };
 

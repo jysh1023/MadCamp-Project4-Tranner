@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
+import { Flex, Input, Button, } from "@chakra-ui/react";
 
 const SearchBar = ({onSearch}) => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -16,24 +16,22 @@ const SearchBar = ({onSearch}) => {
   };
 
   return (
-    <FormControl>
-      <FormLabel>Location</FormLabel>
+    <Flex w='95vh' alignItems='center' my='10px'>
       <Input
         type="text"
         value={searchKeyword}
         onChange={handleInputChange}
         placeholder="Search for a location"
+        mr='10px'
       />
+
       <Button
-        mt={4}
         colorScheme='teal'
         type='submit'
         onClick={handleSearchClick}>
         검색
       </Button>
-    </FormControl>
-
-
+    </Flex>
   );
 };
 
