@@ -7,21 +7,19 @@ const MapSearch = ({ onLocationSelect }) => {
   const [suggestedKeywords, setSuggestedKeywords] = useState([]);
 
   const handleSearch = async (keyword) => {
-    console.log("들어왔음")
 
     if(keyword.trim() != '') {
       try {
-
         const response = await axios.get('/api/naverapi', {
           params: {
             query: keyword,
+            display: 5,
           }
         });
 
         if (response.status === 200) {
           const data = await response.data;
-          console.log(data);
-          setSuggestedKeywords(data.items.map((item) => item.title));
+          setSuggestedKeywords(data.items.map((item) => item.title.replace( /(<([^>]+)>)/ig, '')));
         } else {
           setSuggestedKeywords([])
         }
@@ -36,29 +34,30 @@ const MapSearch = ({ onLocationSelect }) => {
 
   const selectLocationHandler = async (address) => {
 
-    const response = await axios.get('/api/naverapi', {
-      params: {
-        query: address,
-        display: 5,
-      }
-    })
-      .then(() => {
-        const data =  response.data;
-        if (data.items && data.items.length > 0) {
-          const place = data.items[0];
-          const { mapx, mapy, title } = place;
-
-          const longitude = parseFloat(mapx);
-          const latitude = parseFloat(mapy);
-
-          onLocationSelect(new window.naver.maps.LatLng(latitude, longitude));
-
-          console.log('Selected location:', title, latitude, longitude);
+    try {
+      const response = await axios.get('/api/naverapi', {
+        params: {
+          query: address,
+          display: 1,
         }
       })
-      .catch((error) => {
-        console.error('Error fetching location data:', error);
-      });
+
+      const data =  response.data;
+      if (data.items && data.items.length > 0) {
+        const place = data.items[0];
+        const { mapx, mapy, title } = place;
+
+        const longitude = parseFloat(mapx);
+        const latitude = parseFloat(mapy);
+
+        onLocationSelect(new window.naver.maps.LatLng(latitude, longitude));
+
+        console.log('Selected location:', title, latitude, longitude);
+      }
+
+    } catch (error) {
+      console.error('Error fetching location data: ', error);
+    }
 
   };
 

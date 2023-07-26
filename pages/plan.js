@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from "@chakra-ui/react"
-import { Container } from "@chakra-ui/react"
+import { Container, Flex } from "@chakra-ui/react"
 import Map from "../components/Map"
 import MapSearch from "../components/MapSearch"
 import Layout from "../components/Layout"
@@ -15,8 +15,8 @@ export default function Plan() {
 
   return (
     <Layout>
-      <Container centerContent>
-        <Tabs variant='soft-rounded' colorScheme='blue'>
+      <Flex alignItems='center'>
+        <Tabs variant='soft-rounded' colorScheme='teal'>
           <TabList>
             <Tab>나의 계획</Tab>
             <Tab>일행과 비교하기</Tab>
@@ -33,7 +33,7 @@ export default function Plan() {
             </TabPanel>
           </TabPanels>
         </Tabs>
-      </Container>
+      </Flex>
     </Layout>
   )
 }

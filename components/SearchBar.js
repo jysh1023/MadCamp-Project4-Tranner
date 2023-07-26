@@ -7,11 +7,9 @@ const SearchBar = ({onSearch}) => {
   const handleInputChange = (e) => {
     setSearchKeyword(e.target.value);
     onSearch(e.target.value);
-    console.log(searchKeyword);
   }
 
   const handleSearchClick = () => {
-    console.log('clicked')
     if (searchKeyword.trim() !== '') {
       onSearch(searchKeyword);
     }

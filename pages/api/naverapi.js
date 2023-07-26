@@ -12,9 +12,10 @@ export default async function handler(req, res) {
         },
         params: req.query,
       });
-      // console.log(response.data);
 
       const data = response.data;
+
+      // console.log(data);
 
       if (data.items && data.items.length > 0) {
         res.status(200).json(data);
