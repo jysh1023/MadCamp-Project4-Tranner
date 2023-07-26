@@ -26,7 +26,6 @@ const PlanSchema = new Schema({
     }],
     styles : [String],
     who : [String],
-    day : Number,
     days : [DaySchema],
     startday : Date,
     enddate : Date,
@@ -34,4 +33,4 @@ const PlanSchema = new Schema({
     comments : [CommentsSchema]
 });
 
-module.exports = mongoose.model('Plan', PlanSchema);const mongoose = require('mongoose');
+module.exports = mongoose.model('Plan', PlanSchema);

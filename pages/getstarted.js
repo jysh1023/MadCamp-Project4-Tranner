@@ -79,8 +79,7 @@ export default function JoinOurTeam() {
         try {
             console.log(id, name, password, selectedWho, selectedStyles);
             const response = await axios.post('./api/signup', userData);
-            console.log(response.data);
-    
+            localStorage.setItem('id', response.data.user._id);
             if (response.status == 200) {
                 router.push('/explore');
             } else {

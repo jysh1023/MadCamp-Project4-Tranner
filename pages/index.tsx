@@ -37,7 +37,7 @@ export default function SignupCard() {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                localStorage.setItem('id', data.user._id)
                 router.push('/explore');
             } else {
                 const errorData = await response.json();

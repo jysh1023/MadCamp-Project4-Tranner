@@ -25,17 +25,9 @@ import Layout from "../components/Layout"
 import { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import DatePicker from './datepicker';
+import { useRouter } from 'next/router';
 
-
-const Form1 = ({onDateChange}) => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(null);
-
-    const handleSubmit = () =>{
-      onDateChange(startDate, endDate)
-      console.log('Form 1 : ' , startDate, endDate);
-    };
-
+const Form1 = ({onForm1Change}) => {
     return (
         <>
             <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
@@ -55,23 +47,14 @@ const Form1 = ({onDateChange}) => {
                 mt='150px'
                 ml='40%'>
                 <DatePicker onDateChange={(start, end) => {
-                    setStartDate(start)
-                    setEndDate(end)
+                    onForm1Change(start, end);
                 }}/>
-                <Button
-                    w = "6rem"
-                    ml='12%'
-                    colorScheme='red'
-                    onClick={handleSubmit}
-                    >
-                    Submit
-                </Button>
             </Box>
         </>
     )
 }
 
-const Form2 = ({onDateChange}) => {
+const Form2 = ({onForm2Change}) => {
   const [aloneClick, setaloneClick] = useState(false);
   const [friendClick, setfriendClick] = useState(false);
   const [coupleClick, setcoupleClick] = useState(false);
@@ -95,7 +78,7 @@ const Form2 = ({onDateChange}) => {
   let styles_list = ['체험', '핫플', '힐링', '관광지', '문화,예술', '여행지', '쇼핑', '먹거리'];
   let styles_select =[activeClick, hotClick, healingClick, famousClick, artClick, travelClick, shopClick, foodClick];
 
-  const handleSubmit = async () => {
+  useEffect(() => {
     const selectedWho = [];
     const selectedStyles = [];
 
@@ -110,13 +93,9 @@ const Form2 = ({onDateChange}) => {
             selectedStyles.push(styles_list[index]);
         }
     });
-
-    setWho(selectedWho);
-    setStyles(selectedStyles);
-
-    onDateChange(selectedWho, selectedStyles)
-  };
-
+    onForm2Change(selectedWho, selectedStyles)
+  }, [aloneClick, friendClick, coupleClick, lifeClick, childClick, parentsClick, etcClick, activeClick, hotClick, artClick, famousClick, healingClick, travelClick, foodClick, shopClick]);
+  
   return (
     <>
         <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
@@ -286,14 +265,6 @@ const Form2 = ({onDateChange}) => {
                   </Tag>
               </Flex>
           </HStack>
-          <Button
-            mt='20px'
-            w = "5rem"
-            colorScheme='red'
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
       </FormLabel>
     </>
   )
@@ -320,8 +291,7 @@ const CityBox = ({ image, name, selected, onClick }) => {
   );
 };
 
-const Form3 = () => {
-
+const Form3 = ({onForm3Change}) => {
   const cities = [
     { image: '113.png', name: '경복궁' },
     { image: '2.png', name: '해운대' },
@@ -339,9 +309,12 @@ const Form3 = () => {
 
   const handleCityClick = (index) => {
     if(nowIndex !== index){
+      const nameString = cities[index].name;
       setSelectedCity(index);
+      onForm3Change(nameString);
     } else {
       setSelectedCity(null);
+      onForm3Change('');
     }
     setNowIndex(index);
   };
@@ -353,7 +326,7 @@ const Form3 = () => {
           주요도시 설정하기
         </Text>
       </Box>
-      <Input mt='70px' placeholder='가고 싶은 곳을 직접 입력해 주세요' ml='75px' w='1450px'/>
+      <Input mt='70px' placeholder='가고 싶은 곳을 직접 입력해 주세요' ml='75px' w='1450px' onChange={(e) => onForm3Change(e.target.value)}/>
       <SimpleGrid mt="10px" columns={5} spacing={5} mx={10}>
         {cities.map((city, index) => (
           <CityBox
@@ -371,27 +344,67 @@ const Form3 = () => {
 
 export default function Multistep() {
   const toast = useToast()
+  const router = useRouter();
   const [step, setStep] = useState(1)
   const [progress, setProgress] = useState(33.33)
   const [selectedStartDate, setSelectedStartDate] = useState(new Date())
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [selectedWho, setSelectedWho] = useState([])
   const [selectedStyle, setSelectedStyle] = useState([])
+  const [selectedCity, setSelectedCity] = useState('')
 
-  const handleDateChange = (start, end) => {
+  const handleForm1 = (start, end) => {
     setSelectedStartDate(start);
     setSelectedEndDate(end);
   };
 
-  const handleFromTwo = (who, style) => {
+  const handleForm2 = (who, style) => {
     setSelectedWho(who);
     setSelectedStyle(style);
   }
 
-  useEffect(() => {
-    console.log('last time', selectedStartDate, selectedEndDate);
-    console.log('who, style data', selectedWho, selectedStyle);
-  }, [selectedStartDate, selectedEndDate, selectedWho, selectedStyle]);
+  const handleForm3 = (city) => {
+    setSelectedCity(city);
+  }
+
+  const handleSubmit = async () => {
+    let userId = localStorage.getItem('id')
+    console.log(userId);
+    const planDate = {
+        userId : userId,
+        who: selectedWho,
+        styles: selectedStyle,
+        startday : selectedStartDate,
+        enddate : selectedEndDate,
+        city : selectedCity,
+    };
+    try {
+        const response = await axios.post('./api/createplan', planDate);
+        console.log(response.data);
+        localStorage.setItem('plan', response.data.plan._id);
+        if (response.status == 200) {
+            router.push('/plan');
+        } else {
+            console.error('Already exist id', response.data.message);
+            toast({
+                title: '데이터 전송 중 오류가 생겼습니다.',
+                description: response.data.message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    } catch (error) {
+        console.error('Error during sign up:', error.message);
+        toast({
+            title: '에러',
+            description: '오류가 발생했습니다.',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+        });
+    }
+  };
 
   return (
     <Layout>
@@ -404,7 +417,7 @@ export default function Multistep() {
         rounded={'md'}
         overflow={'hidden'}>
         <Progress hasStripe value={progress} mb="1%" mx="5%" mt= "2%" isAnimated></Progress>
-        {step === 1 ? <Form1 onDateChange={handleDateChange}/> : step === 2 ? <Form2 onDateChange={handleFromTwo}/> : <Form3 />}
+        {step === 1 ? <Form1 onForm1Change={handleForm1}/> : step === 2 ? <Form2 onForm2Change={handleForm2}/> : <Form3 onForm3Change={handleForm3}/>}
         <ButtonGroup w="100%" position='absolute' bottom="8%">
           <Flex w="100%" justifyContent="space-between">
             <Flex>
@@ -440,18 +453,10 @@ export default function Multistep() {
             {step === 3 ? (
               <Button
                 w="6rem"
-                mr="15%"
+                mr="5%"
                 colorScheme="red"
                 variant="solid"
-                onClick={() => {
-                  toast({
-                    title: 'Account created.',
-                    description: "We've created your account for you.",
-                    status: 'success',
-                    duration: 3000,
-                    isClosable: true,
-                  })
-                }}>
+                onClick={handleSubmit}>
                 Submit
               </Button>
             ) : null}

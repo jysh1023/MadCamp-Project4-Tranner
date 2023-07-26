@@ -11,9 +11,9 @@ const Calendar = ({onDateChange}) => {
       const [start, end] = dates;
       setStartDate(start);
       setEndDate(end);
-      console.log(start, end);
       onDateChange(start, end);
     };
+    
     return (
         <>
             <DatePicker
