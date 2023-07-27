@@ -19,4 +19,4 @@ const UserSchema = new Schema({
     plans_id : [{ type: Schema.Types.ObjectId, ref: 'Plan' }],
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.models.User ||mongoose.model('User', UserSchema);

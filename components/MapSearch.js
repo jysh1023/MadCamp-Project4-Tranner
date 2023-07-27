@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SearchBar from "./SearchBar";
 import {
@@ -15,6 +15,8 @@ import {
 const MapSearch = ({ onLocationSelect }) => {
 
   const [suggestedLocations, setSuggestedLocations] = useState([]);
+  const [day, setDay] = useState(null);
+  const [dayInfo, setDayInfo] = useState([]);
 
   const handleSearch = async (keyword) => {
 
@@ -72,16 +74,33 @@ const MapSearch = ({ onLocationSelect }) => {
 
   };
 
-  const handleAddItem = async() => {
-
+  const handleAddItem = async (item) => {
+    dayInfo.push(item);
+    console.log(dayInfo);
   }
+
+  useEffect(() => {
+    const updateData = async () => {
+      try {
+        const response = await axios.put('./api/updatePlan', {
+
+        })
+
+      } catch (error) {
+        console.log()
+      }
+    }
+
+    updateData();
+
+  }, [dayInfo])
 
   const SearchItem = ({item, index}) => {
     const keyword = item.title.replace( /(<([^>]+)>)/ig, '');
     return (
-      <Card size={'sm'} onClick={()=>selectLocationHandler(keyword)} flexDirection={'row'} align={'center'}>
+      <Card size={'sm'} flexDirection={'row'} align={'center'}>
         <Flex flexDirection={'column'}>
-          <CardBody>
+          <CardBody onClick={()=>selectLocationHandler(keyword)} >
             <Heading size='xs'>
               {item.title.replace(/(<([^>]+)>)/ig, '')}
             </Heading>
@@ -96,7 +115,7 @@ const MapSearch = ({ onLocationSelect }) => {
             colorScheme='teal'
             type='submit'
             size={'sm'}
-            onClick={handleAddItem}>
+            onClick={()=>handleAddItem(item)}>
             추가하기
           </Button>
         </Flex>
@@ -108,7 +127,7 @@ const MapSearch = ({ onLocationSelect }) => {
   return (
     <Flex flexDirection={'column'}>
       <SearchBar onSearch={handleSearch} />
-      <Stack spacing={1}>
+      <Stack spacing={1} >
         {suggestedLocations.map((item, index,) => (
           <SearchItem key={index} item={item} />
         ))}

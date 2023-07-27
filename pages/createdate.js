@@ -26,6 +26,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import DatePicker from './datepicker';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const Form1 = ({onForm1Change}) => {
     return (
@@ -39,11 +40,11 @@ const Form1 = ({onForm1Change}) => {
                     여행일정 등록하기
                 </Text>
             </Box>
-            <Box 
+            <Box
                 className='datepicker-container'
                 h={'800px'}
-                w={'600px'} 
-                pos={'relative'} 
+                w={'600px'}
+                pos={'relative'}
                 mt='150px'
                 ml='40%'>
                 <DatePicker onDateChange={(start, end) => {
@@ -95,7 +96,7 @@ const Form2 = ({onForm2Change}) => {
     });
     onForm2Change(selectedWho, selectedStyles)
   }, [aloneClick, friendClick, coupleClick, lifeClick, childClick, parentsClick, etcClick, activeClick, hotClick, artClick, famousClick, healingClick, travelClick, foodClick, shopClick]);
-  
+
   return (
     <>
         <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
@@ -114,7 +115,7 @@ const Form2 = ({onForm2Change}) => {
           spacing={4}>Who
           <HStack>
               <Flex flexWrap="wrap" mt={2}>
-                  <Tag 
+                  <Tag
                       size='lg'
                       variant='solid'
                       mr={2}
@@ -123,26 +124,26 @@ const Form2 = ({onForm2Change}) => {
                   >
                       혼자
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setfriendClick((friendClickClick)=>!friendClickClick)}
                       colorScheme = {friendClick ? 'red' : 'teal'}
                   >
                       친구와
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setcoupleClick((coupleClick)=>!coupleClick)}
                       colorScheme = {coupleClick ? 'red' : 'teal'}
                   >
                       연인과
                   </Tag>
-                  <Tag 
-                      size='lg' 
+                  <Tag
+                      size='lg'
                       variant='solid'
                       onClick={() => setlifeClick((lifeClick)=>!lifeClick)}
                       colorScheme = {lifeClick ? 'red' : 'teal'}
@@ -153,27 +154,27 @@ const Form2 = ({onForm2Change}) => {
           </HStack>
           <HStack>
               <Flex flexWrap="wrap" mt={2}>
-              <Tag 
-                      size='lg' 
-                      variant='solid' 
+              <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setchildClick((childClick)=>!childClick)}
                       colorScheme = {childClick ? 'red' : 'teal'}
                   >
                       아이와
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setparentsClick((parentsClick)=>!parentsClick)}
                       colorScheme = {parentsClick ? 'red' : 'teal'}
                   >
                       부모님과
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       onClick={() => setetcClick((etcClick)=>!etcClick)}
                       colorScheme = {etcClick ? 'red' : 'teal'}
                   >
@@ -182,43 +183,43 @@ const Form2 = ({onForm2Change}) => {
               </Flex>
           </HStack>
       </FormLabel>
-      <FormLabel 
+      <FormLabel
         mt='100px'
         mx='75px'
         fontSize='25px'
         spacing={4}>Styles
           <HStack>
               <Flex flexWrap="wrap" mt={2}>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setactiveClick((activeClick)=>!activeClick)}
                       colorScheme = {activeClick ? 'red' : 'teal'}
                   >
                       체험
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => sethotClick((hotClick)=>!hotClick)}
                       colorScheme = {hotClick ? 'red' : 'teal'}
                   >
                       핫플
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => sethealingClick((healingClick)=>!healingClick)}
                       colorScheme = {healingClick ? 'red' : 'teal'}
                   >
                       힐링
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       onClick={() => setfamousClick((aloneClick)=>!aloneClick)}
                       colorScheme = {famousClick ? 'red' : 'teal'}
                   >
@@ -228,36 +229,36 @@ const Form2 = ({onForm2Change}) => {
           </HStack>
           <HStack>
               <Flex flexWrap="wrap" mt={2}>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setartClick((aloneClick)=>!aloneClick)}
                       colorScheme = {artClick ? 'red' : 'teal'}
                   >
                       문화,예술
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => settravelClick((aloneClick)=>!aloneClick)}
                       colorScheme = {travelClick ? 'red' : 'teal'}
                   >
                       여행지
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       mr={2}
                       onClick={() => setshopClick((shopClick)=>!shopClick)}
                       colorScheme = {shopClick ? 'red' : 'teal'}
                   >
                       쇼핑
                   </Tag>
-                  <Tag 
-                      size='lg' 
-                      variant='solid' 
+                  <Tag
+                      size='lg'
+                      variant='solid'
                       onClick={() => setfoodClick((foodClick)=>!foodClick)}
                       colorScheme = {foodClick ? 'red' : 'teal'}
                   >

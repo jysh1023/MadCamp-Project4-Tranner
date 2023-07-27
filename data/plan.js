@@ -6,17 +6,18 @@ const CommentsSchema = new Schema({
     comment : String
 });
 
+const DetailSchema = new Schema({
+    title : String,
+    content: String,
+    API : String
+});
+
 const DaySchema = new Schema({
     userId : { type: Schema.Types.ObjectId, ref: 'User' },
     details : [DetailSchema],
     day : Number
 });
 
-const DetailSchema = new Schema({
-    title : String,
-    content: String,
-    API : String
-});
 
 const PlanSchema = new Schema({
     userId : [{
@@ -33,4 +34,4 @@ const PlanSchema = new Schema({
     comments : [CommentsSchema]
 });
 
-module.exports = mongoose.model('Plan', PlanSchema);
+module.exports = mongoose.models.Plan || mongoose.model('Plan', PlanSchema);

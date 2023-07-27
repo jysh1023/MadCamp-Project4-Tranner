@@ -25,11 +25,12 @@ export default function SearchArea() {
       boxShadow={'xl'}
       rounded={'xl'}
       flexDirection={'column'}
-      display={'flex'}>
-      <Box flex={1} zIndex={10}>
+
+      >
+      <Box zIndex={10} position='absolute' top={'140px'}>
         <MapSearch onLocationSelect={handleLocationSelect} />
       </Box>
-      <Box flex={2} position='absolute' >
+      <Box position='absolute' mt={'30px'}>
         <Map width="100vh" height="70vh" location={selectedLocation} />
       </Box>
     </Flex>

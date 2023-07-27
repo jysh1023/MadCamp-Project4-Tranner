@@ -10,9 +10,9 @@ export default async function handler(req, res) {
         const newPlan = new Plan({ userId, who, styles, startday, enddate, city });
         await newPlan.save();
         console.log(newPlan);
-        return res.status(200).json({ message: 'Create plan successful', plan : newUser });
+        return res.status(200).json({ message: 'Create plan successful', plan: newPlan }); // Fixed a typo here (newUser -> newPlan)
     } catch (error) {
-        console.error('Error during sign up:', error.message); // 추가된 로그 출력
+        console.error('Error during plan creation:', error.message);
         return res.status(500).json({ message: 'Server error' });
     }
 }
