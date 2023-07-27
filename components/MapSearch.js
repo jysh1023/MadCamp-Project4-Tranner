@@ -12,10 +12,10 @@ import {
 } from "@chakra-ui/react";
 
 
-const MapSearch = ({ onLocationSelect }) => {
+const MapSearch = ({ onLocationSelect, onDateSelect}) => {
 
   const [suggestedLocations, setSuggestedLocations] = useState([]);
-  const [day, setDay] = useState(null);
+  const day = onDateSelect;
   const [dayInfo, setDayInfo] = useState([]);
 
   const handleSearch = async (keyword) => {
@@ -75,25 +75,54 @@ const MapSearch = ({ onLocationSelect }) => {
   };
 
   const handleAddItem = async (item) => {
-    dayInfo.push(item);
-    console.log(dayInfo);
-  }
+    const newDay = {
+      title: item.title,
+      content: item.address,
+      API: item,
+    };
+
+    setDayInfo((prevDayInfo) => [...prevDayInfo, newDay]);
+    console.log("dayInfo:", dayInfo); // Add this line to check the content of dayInfo
+    updateData([...dayInfo, newDay]);
+  };
 
   useEffect(() => {
-    const updateData = async () => {
-      try {
-        const response = await axios.put('./api/updatePlan', {
+    console.log("dayInfo in useEffect:", dayInfo); // Add this line to check the content of dayInfo
+    if (dayInfo.length !== 0) {
+      updateData(dayInfo);
+    }
+  }, [dayInfo]);
 
-        })
+  const updateData = async (data) => {
 
-      } catch (error) {
-        console.log()
-      }
+    if (!Array.isArray(data) || data.length === 0) {
+      console.log("Invalid data:", data);
+      return;
     }
 
-    updateData();
+    console.log("data in updateData:", data);
 
-  }, [dayInfo])
+    const userId = localStorage.getItem('id');
+
+    try {
+
+      const response = await axios.put('./api/updateplan', {
+        userId: userId,
+        days: data,
+        day: day,
+      })
+
+      console.log(response.data)
+
+      if (response.status == 200) {
+        console.log("Update plan successful ", response.data)
+      } else {
+        console.error("Error updating plan: ", error)
+      }
+    } catch (error) {
+      console.error("Error updating plan: ", error)
+    };
+  }
 
   const SearchItem = ({item, index}) => {
     const keyword = item.title.replace( /(<([^>]+)>)/ig, '');

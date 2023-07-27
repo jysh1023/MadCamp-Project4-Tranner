@@ -28,10 +28,15 @@ const planItems = () => {
   )
 }
 
-export default function PlanArea() {
+export default function PlanArea({onDateSelect}) {
 
   const [days, setDays] = useState([1, 2, 3]);
   const [currentDay, setCurrentDay] = useState(0);
+
+  const handleTabClick = (tab) => {
+    setCurrentDay(tab);
+    onDateSelect(tab);
+  }
 
   return (
     <Flex
@@ -49,9 +54,9 @@ export default function PlanArea() {
         m='10px'
       >
         <TabList justifyContent={'center'}>
-          <Tab onClick={() => setCurrentDay(0)}>전체</Tab>
+          <Tab onClick={()=> handleTabClick(0)}>전체</Tab>
           {days.map((tab, index) => (
-            <Tab key={index} onClick={()=>setCurrentDay(tab)}>Day {tab}</Tab>
+            <Tab key={index} onClick={()=> handleTabClick(tab)}>Day {tab}</Tab>
           ))}
         </TabList>
 

@@ -6,7 +6,13 @@ import PlanArea from "../components/PlanArea"
 
 import Layout from "../components/Layout"
 
-export default function Planning() {
+export default function Planning()  {
+
+  const [currentDay, setCurrentDay] = useState(0);
+
+  const onDateSelect = (day) => {
+    setCurrentDay(day);
+  }
 
   return (
     <Layout>
@@ -20,10 +26,10 @@ export default function Planning() {
             <TabPanel>
               <Flex display='flex' flexWrap='wrap' w='100%' gap='25px'>
                 <Box flex='4' >
-                  <PlanArea />
+                  <PlanArea onDateSelect={onDateSelect}/>
                 </Box>
                 <Box flex='6' minH={'875h'}>
-                  <SearchArea />
+                  <SearchArea dateSelected={currentDay}/>
                 </Box>
               </Flex>
             </TabPanel>

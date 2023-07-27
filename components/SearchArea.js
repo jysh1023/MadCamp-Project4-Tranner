@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Flex,
   Box,
@@ -7,13 +7,14 @@ import {
 import Map from "./Map"
 import MapSearch from "./MapSearch"
 
-export default function SearchArea() {
+export default function SearchArea({ dateSelected }) {
 
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   const handleLocationSelect = (location) => {
     setSelectedLocation(location);
   };
+
 
   return(
     <Flex
@@ -28,7 +29,7 @@ export default function SearchArea() {
 
       >
       <Box zIndex={10} position='absolute' top={'140px'}>
-        <MapSearch onLocationSelect={handleLocationSelect} />
+        <MapSearch onLocationSelect={handleLocationSelect} onDateSelect={dateSelected} />
       </Box>
       <Box position='absolute' mt={'30px'}>
         <Map width="100vh" height="70vh" location={selectedLocation} />
