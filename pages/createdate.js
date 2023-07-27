@@ -29,30 +29,31 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 
 const Form1 = ({onForm1Change}) => {
-    return (
-        <>
-            <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
-                <Text
-                    color={'black.500'}
-                    fontWeight={800}
-                    fontSize={'30px'}
-                    letterSpacing={1.1}>
-                    여행일정 등록하기
-                </Text>
-            </Box>
-            <Box
-                className='datepicker-container'
-                h={'800px'}
-                w={'600px'}
-                pos={'relative'}
-                mt='150px'
-                ml='40%'>
-                <DatePicker onDateChange={(start, end) => {
-                    onForm1Change(start, end);
-                }}/>
-            </Box>
-        </>
-    )
+
+  return (
+      <>
+          <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
+              <Text
+                  color={'black.500'}
+                  fontWeight={800}
+                  fontSize={'30px'}
+                  letterSpacing={1.1}>
+                  여행일정 등록하기
+              </Text>
+          </Box>
+          <Box
+              className='datepicker-container'
+              h={'800px'}
+              w={'600px'}
+              pos={'relative'}
+              mt='150px'
+              ml='40%'>
+              <DatePicker onDateChange={(start, end) => {
+                  onForm1Change(start, end);
+              }}/>
+          </Box>
+      </>
+  )
 }
 
 const Form2 = ({onForm2Change}) => {
@@ -343,16 +344,30 @@ const Form3 = ({onForm3Change}) => {
   );
 };
 
+const Form4 = ({onForm4Change}) => {
+  return (
+    <>
+      <Box h={'40px'} mt={1} mx="75px" mb={6} pos={'absolute'}>
+        <Text color={'black.500'} fontWeight={800} fontSize={'40px'} letterSpacing={1.1}>
+          여행 제목 선정하기
+        </Text>
+        <Input mt='70px' placeholder='여행제목을 입력해주세요' w='1450px' h = '50px'onChange={(e) => onForm4Change(e.target.value)}/>
+      </Box>
+    </>
+  );
+};
+
 export default function Multistep() {
   const toast = useToast()
   const router = useRouter();
   const [step, setStep] = useState(1)
-  const [progress, setProgress] = useState(33.33)
+  const [progress, setProgress] = useState(25)
   const [selectedStartDate, setSelectedStartDate] = useState(new Date())
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [selectedWho, setSelectedWho] = useState([])
   const [selectedStyle, setSelectedStyle] = useState([])
   const [selectedCity, setSelectedCity] = useState('')
+  const [selectedTitle, setSelectedTitle] = useState('')
 
   const handleForm1 = (start, end) => {
     setSelectedStartDate(start);
@@ -368,11 +383,16 @@ export default function Multistep() {
     setSelectedCity(city);
   }
 
+  const handleForm4 = (title) => {
+    setSelectedTitle(title);
+  }
+
   const handleSubmit = async () => {
     let userId = localStorage.getItem('id')
     console.log(userId);
     const planDate = {
         userId : userId,
+        title : selectedTitle,
         who: selectedWho,
         styles: selectedStyle,
         startday : selectedStartDate,
@@ -383,20 +403,36 @@ export default function Multistep() {
         const response = await axios.post('./api/createplan', planDate);
         console.log(response.data);
         localStorage.setItem('plan', response.data.plan._id);
-        if (response.status == 200) {
-            router.push('/plan');
-        } else {
-            console.error('Already exist id', response.data.message);
-            toast({
-                title: '데이터 전송 중 오류가 생겼습니다.',
-                description: response.data.message,
-                status: 'error',
-                duration: 5000,
-                isClosable: true,
-            });
+        if (response.status !== 200) {
+          toast({
+            title: '데이터 전송 중 오류가 생겼습니다.',
+            description: response.data.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
         }
+        const userId = localStorage.getItem('id');
+        const planId = localStorage.getItem('plan');
+        console.log('here');
+        const addUser = {
+          userId : userId,
+          planId : planId,
+        }
+        const res = await axios.post('./api/addplan', addUser);
+        console.log('here2');
+        if (res.status !== 200) {
+          toast({
+            title: '데이터 전송 중 오류가 생겼습니다.',
+            description: response.data.message,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+        router.push('/planning');
     } catch (error) {
-        console.error('Error during sign up:', error.message);
+        console.error('Error during add plan up:', error.message);
         toast({
             title: '에러',
             description: '오류가 발생했습니다.',
@@ -418,14 +454,14 @@ export default function Multistep() {
         rounded={'md'}
         overflow={'hidden'}>
         <Progress hasStripe value={progress} mb="1%" mx="5%" mt= "2%" isAnimated></Progress>
-        {step === 1 ? <Form1 onForm1Change={handleForm1}/> : step === 2 ? <Form2 onForm2Change={handleForm2}/> : <Form3 onForm3Change={handleForm3}/>}
+        {step === 1 ? <Form1 onForm1Change={handleForm1}/> : step === 2 ? <Form2 onForm2Change={handleForm2}/> : step === 3 ? <Form3 onForm3Change={handleForm3}/> : <Form4 onForm4Change={handleForm4}/>}
         <ButtonGroup w="100%" position='absolute' bottom="8%">
           <Flex w="100%" justifyContent="space-between">
             <Flex>
               <Button
                 onClick={() => {
                   setStep(step - 1)
-                  setProgress(progress - 33.33)
+                  setProgress(progress - 25)
                 }}
                 isDisabled={step === 1}
                 colorScheme="teal"
@@ -437,13 +473,13 @@ export default function Multistep() {
               </Button>
               <Button
                 w="6rem"
-                isDisabled={step === 3}
+                isDisabled={step === 4}
                 onClick={() => {
                   setStep(step + 1)
-                  if (step === 3) {
+                  if (step === 4) {
                     setProgress(100)
                   } else {
-                    setProgress(progress + 33.33)
+                    setProgress(progress + 25)
                   }
                 }}
                 colorScheme="teal"
@@ -451,10 +487,10 @@ export default function Multistep() {
                 Next
               </Button>
             </Flex>
-            {step === 3 ? (
+            {step === 4 ? (
               <Button
                 w="6rem"
-                mr="5%"
+                mr="18%"
                 colorScheme="red"
                 variant="solid"
                 onClick={handleSubmit}>

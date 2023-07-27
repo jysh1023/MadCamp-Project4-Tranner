@@ -25,6 +25,7 @@ const PlanSchema = new Schema({
         required : true,
         ref: 'User'
     }],
+    title : String,
     styles : [String],
     who : [String],
     days : [DaySchema],
