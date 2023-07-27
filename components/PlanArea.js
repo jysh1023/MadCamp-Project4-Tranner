@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Flex,
   useColorModeValue,
@@ -7,13 +7,23 @@ import {
   Tab,
   TabPanel,
   TabPanels,
-  Card
+  Card,
+  CardBody,
+  Heading,
+  Text
 } from "@chakra-ui/react";
 
 const planItems = () => {
   return (
     <Card>
-
+      <CardBody>
+        <Heading size='xs'>
+          {item.title.replace(/(<([^>]+)>)/ig, '')}
+        </Heading>
+        <Text pt='2' fontSize='sm'>
+          {item.address}
+        </Text>
+      </CardBody>
     </Card>
   )
 }
@@ -21,7 +31,7 @@ const planItems = () => {
 export default function PlanArea() {
 
   const [days, setDays] = useState([1, 2, 3]);
-
+  const [currentDay, setCurrentDay] = useState(0);
 
   return (
     <Flex
@@ -39,9 +49,9 @@ export default function PlanArea() {
         m='10px'
       >
         <TabList justifyContent={'center'}>
-          <Tab>전체</Tab>
+          <Tab onClick={() => setCurrentDay(0)}>전체</Tab>
           {days.map((tab, index) => (
-            <Tab key={index}>Day {tab}</Tab>
+            <Tab key={index} onClick={()=>setCurrentDay(tab)}>Day {tab}</Tab>
           ))}
         </TabList>
 
