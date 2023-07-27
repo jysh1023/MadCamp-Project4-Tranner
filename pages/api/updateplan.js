@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         res.json(updatedPlan);
         return res.status(200).json({ message: 'Update successful', user: newUser });
     } catch (error) {
-        console.error('Error during update:', error.message);
+        console.error('Error during sign up:', error.message);
         return res.status(500).json({ message: 'Server error' });
     }
 }
